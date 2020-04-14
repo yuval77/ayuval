@@ -1,0 +1,26 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>suicide rate in countries data page</h1>
+<h3>The first data page shows the suicide rates per 100,000 people, and the second one shows alcohol consumption for each country. We can see that countries with higher alcohol consumption tend to have higher suicide rates.</h3>
+
+<div class="col-lg-4" style="background-color: white">
+    <p><a href="{{ url_for('DataSet1') }}">Suicide rate</a></p>
+</div>
+
+<div class="col-lg-4" style="background-color: white">
+    <p><a href="{{ url_for('DataSet2') }}">Alcohol consumption</a></p>
+</div>
+
+<table>
+    <tr>
+        <th>
+            <img src="https://reflectionscounsellinglincoln.files.wordpress.com/2013/01/crying-baby.jpg" style="width:500px;height:750px;" />
+        </th>
+        <th>
+            <img src="https://images.unsplash.com/photo-1561150169-371f366b828a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" style="width:500px;height:750px;" />
+        </th>
+    </tr>
+
+    {% endblock %}

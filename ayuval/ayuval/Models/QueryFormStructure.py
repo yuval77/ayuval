@@ -7,7 +7,7 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms import Form, BooleanField, PasswordField
-from wtforms import TextField, TextAreaField, SelectField, DateField
+from wtforms import TextField, TextAreaField, SelectField, DateField, SelectMultipleField
 from wtforms import validators, ValidationError
 
 from wtforms.validators import DataRequired
@@ -24,7 +24,8 @@ from wtforms.validators import DataRequired
 class QueryFormStructure(FlaskForm):
     name   = StringField('Country Name:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
-
+    LOCATION = TextField("LOCATION",[validators.Required("Please enter a location.")])
+    #LOCATION = SelectMultipleField('Select Multiple:', validators = [DataRequired] )
 
 
 

@@ -4,29 +4,35 @@
 
 <h2>{{title}}</h2>
 
-<p>This page will enable the user to input a data field</p>
+<p>This page has 2 graphs, on the right, we see the suicide rate per 100,000 people, and on the left, liters of alcohol an average person drinks in a year. Both data sets show info from the recent year and include only some countries from the OECD organization. You can see that the rates are similar in most of the countries.</p>
 
 
-    <form method=post>
-        {{ form.csrf }}
-        <table>
-            <tr>
-                <td class="input text"> {{ form.name.label }} </td>
-                <td>                    {{ form.name }}       </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="input submit"> <input type="submit" value="Capital"> </td>
-            </tr>
-        </table>
-    </form>
+<form method=post>
+    {{ form.csrf }}
+    <table>
+        <tr>
+            <td class="input text"> {{ form.LOCATION.label }} </td>
+            <td>                    {{ form.LOCATION }}       </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="input submit"> <input type="submit" value="submit"> </td>
+        </tr>
+    </table>
+</form>
 
-    <p><h1>Capital of {{Country}} is : <b>{{name}}</b></h1></p>
+<p><h1>The country {{LOCATION}} is in line: <b>{{Value}}</b></h1></p>
 
-    <h3> Table is </h3>
-    {{ raw_data_table | safe}}
+<table>
+    <tr>
+        <th>
+            <img src="plot2.png" style="width:700px;height:700px;" />
+        </th>
+        <th>
+            <img src="plot.png" style="width:700px;height:700px;" />
+        </th>
+    </tr>
+</table>
 
 
-    {% endblock %}
-
-
+{% endblock %}

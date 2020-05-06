@@ -6,6 +6,8 @@ from datetime import datetime
 from flask import render_template
 from ayuval import app
 from ayuval.Models.LocalDatabaseRoutines import create_LocalDatabaseServiceRoutines
+#from ayuval.Models.LocalDatabaseRoutines import get_LOCATION_choices
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 
 from datetime import datetime
@@ -19,6 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
 import json 
 import requests
 
@@ -27,7 +30,7 @@ import base64
 
 from os import path
 
-from flask   import Flask, render_template, flash, request
+from flask   import Flask, render_template, flash, request, Response
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from wtforms import TextField, TextAreaField, SubmitField, SelectField, DateField
 from wtforms import ValidationError
@@ -36,6 +39,8 @@ from wtforms import ValidationError
 from ayuval.Models.QueryFormStructure import QueryFormStructure 
 from ayuval.Models.QueryFormStructure import LoginFormStructure 
 from ayuval.Models.QueryFormStructure import UserRegistrationFormStructure 
+
+
 
 ###from DemoFormProject.Models.LocalDatabaseRoutines import IsUserExist, IsLoginGood, AddNewUser 
 
@@ -72,42 +77,77 @@ def about():
         message='Your application description page.'
     )
 
+   
+@app.route('/plot.png')
+def plot_png():
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\dataone.csv'))
+    fig = df.plot.barh(x='LOCATION', y='Value').get_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot2.png')
+def plot2_png():
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\datatwo.csv'))
+    ax = df.plot.barh(x='LOCATION', y='Value')
+    #ax.invert_yaxis()  # labels read top-to-bottom
+    ax.invert_xaxis()  # labels read top-to-bottom
+    ax.set_yticklabels([])
+    ax2 = ax.twinx()
+    ax2.set_ylim(ax.get_ylim())
+    #ax2.set_yticks(y_pos)
+    #ax2.set_yticklabels([])
+    output = io.BytesIO()
+    FigureCanvas(ax2.get_figure()).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
 
 @app.route('/Query', methods=['GET', 'POST'])
 def Query():
+    #>#
+    form = QueryFormStructure(request.form)
+    #form.LOCATION.choices = get_LOCATION_choices()
+    LOCATION = ''
+    Value = ''
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\dataone.csv'))
+    #>#
+    df.set_index('LOCATION')
+    
+    
 
-    Name = None
-    Country = ''
-    capital = ''
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\capitals.csv'))
-    df = df.set_index('Country')
 
     raw_data_table = df.to_html(classes = 'table table-hover')
 
-    form = QueryFormStructure(request.form)
-     
+    form = QueryFormStructure(request.form)    
     if (request.method == 'POST' ):
-        name = form.name.data
-        Country = name
-        if (name in df.index):
-            capital = df.loc[name,'Capital']
+        name = form.LOCATION.data
+        LOCATION = name
+        Value = (df[df['LOCATION']==LOCATION].index.values.astype(int)[0])
+        #df = df.set_index('LOCATION')
+        if (name in df['LOCATION']):            
+            #Value = df.get_loc('Israel')
+            #Value = df[df['LOCATION']==LOCATION].index.values
+            #Value = df.loc[name,'Value']
             raw_data_table = ""
-        else:
-            capital = name + ', no such country'
-        form.name.data = ''
+        #else:
+            #Value = name + ', no such country'
+        #form.LOCATION.data = ''
 
 
 
-    return render_template('Query.html', 
-            form = form, 
-            name = capital, 
-            Country = Country,
+    return render_template(
+            'Query.html', 
+            Value = Value,
+            form = form,
+            name = Value,             
             raw_data_table = raw_data_table,
             title='Query by the user',
             year=datetime.now().year,
             message='This page will use the web forms to get user input'
         )
+    
 
+      
 # -------------------------------------------------------
 # Register new user page
 # -------------------------------------------------------
@@ -202,4 +242,5 @@ def DataSet2():
         year=datetime.now().year,
         message='Alcohol consumption for every country'
     )
+
 

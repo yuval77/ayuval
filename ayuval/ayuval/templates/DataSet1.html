@@ -1,14 +1,8 @@
 ﻿{% extends "layout.html" %}
-
 {% block content %}
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
-
-<p>Location- country reprsented in 3 letters. Value - people that suicide</p>
-
+<h2>This is Data Set 1 page - Suicide rate</h2>
+<h3>Location- country reprsented in 3 letters. Value - people that suicide per 100,000 people</h3>
 {{ raw_data_table | safe}}
 
-
-
-    {% endblock %}
+{% endblock %}
